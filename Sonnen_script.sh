@@ -3,14 +3,14 @@
 ############## Change you settings here ##############
 # Charge HQ API Endpoint
 	endpoint="https://api.chargehq.net/api/public/push-solar-data"
-	ChargeHQ_API='Add your ChargeHQ API here'
+	ChargeHQ_API='8465bb32-f292-40b0-ba55-d396861cbae0'
 
 # Sonnen battery IP and sonnen API
-	Sonnen_IP="Add the IP-address of your Sonnen battery"
-	SonnenAPI="Add your Sonnen API here"
+	Sonnen_IP="192.168.0.101:80"
+	SonnenAPI="32eb664b-3b9b-42ef-bf7e-cb9b1415eeaf"
 
 
-# Fetching sonnen-data and sending to ChargeHQ interval in seconds 
+# Fetching sonnen-data and sending to ChargeHQ-server, interval in seconds 
 	interval=60
 ############## END of settings ######################
 
@@ -70,31 +70,31 @@ extract_sonnen_data () {
 
 ############ Convert extracted data to correct name and units, negative positive values according to ChargeHQ standard ##########
 convert_to_chargehq () {
-	m_production_kw=$(echo "scale=5;$production_w/1000" | bc)                             # change w to kw
-        production_kw=$(printf '%.3f\n' $(echo $m_production_kw | bc -l))                     # in order to have a zerro before decimals like 0.123
+	m_production_kw=$(echo "scale=5;"$production_w"/1000" | bc)                             # change w to kw
+        production_kw=$(printf '%.3f\n' $(echo "$m_production_kw" | bc -l))                     # in order to have a zerro before decimals like 0.123
 
-	m_net_import_kw=$(echo "scale=5;$net_import_w/-1000" | bc)                            # change w to kw and make chargeHQ happy with the direction of flow
-        net_import_kw=$(printf '%.3f\n' $(echo $m_net_import_kw | bc -l))                     # in order to have a zerro before decimals like 0.123
-
-
-	m_consumption_kw=$(echo "scale=5;$consumption_w/1000" | bc)                           # change w to kw
-        consumption_kw=$(printf '%.3f\n' $(echo $m_consumption_kw | bc -l))                   # in order to have a zerro before decimals like 0.123
+	m_net_import_kw=$(echo "scale=5;"$net_import_w"/-1000" | bc)                            # change w to kw and make chargeHQ happy with the direction of flow
+        net_import_kw=$(printf '%.3f\n' $(echo "$m_net_import_kw" | bc -l))                     # in order to have a zerro before decimals like 0.123
 
 
-	#m_imported_kwh=$(echo "scale=5;$imported_wh/-1000" | bc)                             # change w to kw and to make chargeHQ happy with the direction of flow
-        imported_kwh=$(printf '%.3f\n' $(echo $m_imported_kwh | bc -l))                       # in order to have a zerro before decimals like 0.123
+	m_consumption_kw=$(echo "scale=5;"$consumption_w"/1000" | bc)                           # change w to kw
+        consumption_kw=$(printf '%.3f\n' $(echo "$m_consumption_kw" | bc -l))                   # in order to have a zerro before decimals like 0.123
 
-	#m_exported_kwh=$(echo "scale=5;$exported_wh/1000" | bc)                              # change w to kw
-        exported_kwh=$(printf '%.3f\n' $(echo $m_exported_kwh | bc -l))                       # in order to have a zerro before decimals like 0.123
 
-	m_battery_discharge_kw=$(echo "scale=5;$battery_discharge_w/1000" | bc)               # change w to kw
-        battery_discharge_kw=$(printf '%.3f\n' $(echo $m_battery_discharge_kw | bc -l))       # in order to have a zerro before decimals like 0.123
+	#m_imported_kwh=$(echo "scale=5;"$imported_wh"/-1000" | bc)                             # change w to kw and to make chargeHQ happy with the direction of flow
+        imported_kwh=$(printf '%.3f\n' $(echo "$m_imported_kwh" | bc -l))                       # in order to have a zerro before decimals like 0.123
 
-	m_battery_energy_kwh=$(echo "scale=5;$battery_energy_wh/1000" | bc)                   # change w to kw 
-        battery_energy_kwh=$(printf '%.3f\n' $(echo $m_battery_energy_kwh | bc -l))           # in order to have a zerro before decimals like 0.123
+	#m_exported_kwh=$(echo "scale=5;"$exported_wh"/1000" | bc)                              # change w to kw
+        exported_kwh=$(printf '%.3f\n' $(echo "$m_exported_kwh" | bc -l))                       # in order to have a zerro before decimals like 0.123
 
-	m_battery_soc=$(echo "scale=3;$battery_soc/100" | bc)                                 # change procent to decimal
-        battery_soc=$(printf '%.3f\n' $(echo $m_battery_soc | bc -l))                         # in order to have a zerro before decimals like 0.123
+	m_battery_discharge_kw=$(echo "scale=5;"$battery_discharge_w"/1000" | bc)               # change w to kw
+        battery_discharge_kw=$(printf '%.3f\n' $(echo "$m_battery_discharge_kw" | bc -l))       # in order to have a zerro before decimals like 0.123
+
+	m_battery_energy_kwh=$(echo "scale=5;"$battery_energy_wh"/1000" | bc)                   # change w to kw 
+        battery_energy_kwh=$(printf '%.3f\n' $(echo "$m_battery_energy_kwh" | bc -l))           # in order to have a zerro before decimals like 0.123
+
+	m_battery_soc=$(echo "scale=3;"$battery_soc"/100" | bc)                                 # change procent to decimal
+        battery_soc=$(printf '%.3f\n' $(echo "$m_battery_soc" | bc -l))                         # in order to have a zerro before decimals like 0.123
 }
 
 
@@ -117,35 +117,35 @@ Push_to_charHQ () {
 ############ Debug section to show variabeles etc:
 list_variable () {
 #echo here is the curl-collected sonnen data: $sonnen_data
-echo Timestamp_ms: $tsms
-echo Fetch_error: $Fetch_error
-echo production W: $production_w
-echo production kW: $production_kw
-echo net import W: $net_import_w
-echo net import kW: $net_import_kw
-echo consumption w: $consumption_w
-echo consumption kw: $consumption_kw
-echo Imported W: $imported_wh
-echo Imported kwh: $imported_kwh
-echo eksport Wh: $exported_wh
-echo eksport kWh: $exported_kwh
-echo Batteri discharge W: $battery_discharge_w
-echo Batteri discharge kW: $battery_discharge_kw
-echo Batteri charge pct: $battery_soc
-echo amount of energy on battery wh:$battery_energy_wh
-echo amount of energy on battery kwh:$battery_energy_kwh
-echo ChargeHQ_API: $ChargeHQ_API
-echo JSON payload: $JSON_payload
-echo ChargeHQ URL: $endpoint
-echo Sonnen battery IP: $Sonnen_IP
-echo Sonnen API-token: $SonnenAPI
-echo fetch interval: $interval
-echo m_production kW: $m_production_kw
-echo m_consumption_kw: $m_consumption_kw
-echo m_net_import_kw: $m_net_import_kw
-echo m_battery_discharge_kw: $m_battery_discharge_kw
-echo m_battery_energy_kwh: $m_battery_energy_kwh
-echo battery_soc: $battery_soc
+echo Timestamp_ms: "$tsms"
+echo Fetch_error: "$Fetch_error"
+echo production W: "$production_w"
+echo production kW: "$production_kw"
+echo net import W: "$net_import_w"
+echo net import kW: "$net_import_kw"
+echo consumption w: "$consumption_w"
+echo consumption kw: "$consumption_kw"
+echo Imported W: "$imported_wh"
+echo Imported kwh: "$imported_kwh"
+echo eksport Wh: "$exported_wh"
+echo eksport kWh: "$exported_kwh"
+echo Batteri discharge W: "$battery_discharge_w"
+echo Batteri discharge kW: "$battery_discharge_kw"
+echo Batteri charge pct: "$battery_soc"
+echo amount of energy on battery wh: "$battery_energy_wh"
+echo amount of energy on battery kwh: "$battery_energy_kwh"
+echo ChargeHQ_API: "$ChargeHQ_API"
+echo JSON payload: "$JSON_payload"
+echo ChargeHQ URL: "$endpoint"
+echo Sonnen battery IP: "$Sonnen_IP"
+echo Sonnen API-token: "$SonnenAPI"
+echo fetch interval: "$interval"
+echo m_production kW: "$m_production_kw"
+echo m_consumption_kw: "$m_consumption_kw"
+echo m_net_import_kw: "$m_net_import_kw"
+echo m_battery_discharge_kw: "$m_battery_discharge_kw"
+echo m_battery_energy_kwh: "$m_battery_energy_kwh"
+echo battery_soc: "$battery_soc"
 }
 
 
