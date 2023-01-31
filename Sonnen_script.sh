@@ -1,5 +1,11 @@
 #!/bin/sh
 
+###### Please notice ########################################################################
+# The Software is provided "as is" without warranty of any kind, either express or implied, #
+# including without limitation any implied warranties of condition, uninterrupted use,      #
+# merchantability, fitness for a particular purpose, or non-infringement                    #
+#############################################################################################
+
 ############## Change you settings here ##############
 # Charge HQ API Endpoint
 	endpoint="https://api.chargehq.net/api/public/push-solar-data"
