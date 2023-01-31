@@ -3,11 +3,11 @@
 ############## Change you settings here ##############
 # Charge HQ API Endpoint
 	endpoint="https://api.chargehq.net/api/public/push-solar-data"
-	ChargeHQ_API='8465bb32-f292-40b0-ba55-d396861cbae0'
+	ChargeHQ_API='Add your ChargeHQ API key here'
 
 # Sonnen battery IP and sonnen API
-	Sonnen_IP="192.168.0.101:80"
-	SonnenAPI="32eb664b-3b9b-42ef-bf7e-cb9b1415eeaf"
+	Sonnen_IP="Add your Sonnen battery IP address here"
+	SonnenAPI='Add your Sonnen API key here'
 
 
 # Fetching sonnen-data and sending to ChargeHQ-server, interval in seconds 
