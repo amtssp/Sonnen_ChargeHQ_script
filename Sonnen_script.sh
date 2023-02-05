@@ -156,12 +156,17 @@ echo battery_soc: "$battery_soc"
 
 
 debug () {
-		Fetch_sonnen_data
+	Fetch_sonnen_data
 		check_sonnen_data
-		extract_sonnen_data
-		convert_to_chargehq
-		Push_to_charHQ
-		list_variable
+		if [ "$sonnen_data" = "" ];
+		then
+			echo Fetch_error: "$Fetch_error"; date
+		else
+			extract_sonnen_data; date
+			convert_to_chargehq
+			Push_to_charHQ
+			list_variable
+		fi
 }
 
 #remove # infront to debug the script
@@ -174,10 +179,16 @@ debug () {
 repeat () {
 	while true; do
 		sleep $interval &
-		Fetch_sonnen_data
-		extract_sonnen_data
-		convert_to_chargehq
-		Push_to_charHQ
+			Fetch_sonnen_data
+			check_sonnen_data
+		if [ "$sonnen_data" = "" ];
+			then
+			echo Fetch_error: "$Fetch_error"; date 
+		else
+			extract_sonnen_data
+			convert_to_chargehq
+			Push_to_charHQ
+		fi
 	wait
 done
 }
