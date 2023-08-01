@@ -132,9 +132,6 @@ Push_to_charHQ () {
 		fi
 		Waiting_loop
 	fi
-
-# Send the data-load to ChargeHQ:
-#	curl -m 3 -H "Content-Type: application/json" -d "$JSON_payload" "$endpoint"   &> /dev/null 
 }
 
 
@@ -143,13 +140,12 @@ Waiting_loop () {
 	wait_period=0
 	while true; do
 		Fetch_sonnen_data
-		extract_sonnen_data
-	sleep $sonnen_wait         								#  Sleeping for number of sec defined in sonnen_wait variable
+		extract_sonnen_data  								
 		wait_period=$(($wait_period+$sonnen_wait))					#  Timer counting the number of sec used for polling Sonnen battery for data 
     			if [ $wait_period -gt $zero_wait ] || [ $production_w -ne 0 ];then	#  Break the script if production is greater than zero or the cript has been running for the time specified in zero_wait variable
 				break
  			else
- 		      		sleep $sonnen_wait
+ 		      		sleep $sonnen_wait 						#  Sleeping for number of sec defined in sonnen_wait variable
 			fi
 done
 }
